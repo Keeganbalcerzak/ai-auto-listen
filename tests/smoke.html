@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Gemini Auto Listen Smoke Test</title>
+    <style>
+      /* Simulate Gemini's TTS container hiding: opacity:0 + pointer-events:none */
+      .response-tts-container {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s;
+      }
+      .response-tts-container.active,
+      .response-tts-container:hover {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div contenteditable="true" id="composer"></div>
+      <section data-message-author-role="model">
+        <p>Old response</p>
+        <div class="response-tts-container active">
+          <button aria-label="Listen to this response" id="old-listen">Old listen</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="../content.js"></script>
+    <script>
+      document.querySelector('#old-listen').addEventListener('click', () => {
+        document.body.dataset.oldClicked = 'true';
+      });
+
+      window.setTimeout(() => {
+        const composer = document.querySelector('#composer');
+        composer.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      }, 1400);
+
+      window.setTimeout(() => {
+        const response = document.createElement('section');
+        response.setAttribute('data-message-author-role', 'model');
+        response.innerHTML = [
+          '<p>New response</p>',
+          '<div class="response-tts-container">',
+          '  <button aria-label="volume_up" id="new-listen">New listen</button>',
+          '</div>'
+        ].join('');
+
+        response.querySelector('button').addEventListener('click', () => {
+          document.body.dataset.newClicked = 'true';
+        });
+
+        document.querySelector('main').append(response);
+      }, 1800);
+    </script>
+  </body>
+</html>

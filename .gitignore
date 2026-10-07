@@ -1,0 +1,6 @@
+.claude/
+node_modules/
+__pycache__/
+*.log
+# old copy of content.js kept for reference
+tests/content_debug.js
